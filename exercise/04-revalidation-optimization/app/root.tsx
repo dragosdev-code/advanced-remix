@@ -7,6 +7,7 @@ import {
   Outlet,
   Scripts,
   ScrollRestoration,
+  ShouldReloadFunction,
   useLoaderData,
   useLocation,
   useSubmit,
@@ -121,3 +122,9 @@ function LogoutTimer() {
 
 // 🐨 Add unstable_shouldReload here and only reload the data if the transition
 // has a submission where the action is "/login" or "/logout"
+
+export const unstable_shouldReload: ShouldReloadFunction = ({ submission }) => {
+  if (submission?.action === "/login") return true;
+  if (submission?.action === "/logout") return true;
+  return false;
+};
