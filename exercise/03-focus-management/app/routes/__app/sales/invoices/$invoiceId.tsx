@@ -191,19 +191,21 @@ function Deposits() {
     | UseDataFunctionReturn<typeof action>["errors"]
     | undefined;
 
+  console.log({ errors });
+
   useEffect(() => {
     if (!formRef.current) return;
     if (newDepositFetcher.state !== "idle") return;
 
-    // 🐨 If there's an error on the amount, focus the amount element
-
-    // 🐨 If there's an error on the desposit date, focus the depositDate element
-
-    // 🐨 Focus on the amount field
-    // 💯 In what situation would we want to *not* change focus and *not* reset the form at this point?
-
-    formRef.current.reset();
-  }, [newDepositFetcher.state]);
+    if (errors?.amount) {
+      formRef.current.elements.amount?.focus();
+    } else if (errors?.depositData) {
+      formRef.current.elements.depositDate?.focus();
+    } else if (document.activeElement === formRef.current.elements.intent) {
+      formRef.current.elements.amount?.focus();
+      formRef.current.reset();
+    }
+  }, [errors, newDepositFetcher.state]);
 
   return (
     <div>
