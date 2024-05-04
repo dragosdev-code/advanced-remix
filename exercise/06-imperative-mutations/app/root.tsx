@@ -10,6 +10,7 @@ import {
   ScrollRestoration,
   useLoaderData,
   useLocation,
+  useSubmit,
 } from "@remix-run/react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Dialog } from "@reach/dialog";
@@ -60,6 +61,7 @@ function LogoutTimer() {
   const [status, setStatus] = useState<"idle" | "show-modal">("idle");
   const location = useLocation();
   // 🐨 add the useSubmit hook here so you can trigger a logout
+  const submitter = useSubmit();
 
   // I've shortened the logoutTime and modalTime with these to test this more easily:
   const logoutTime = 5000;
@@ -70,11 +72,15 @@ function LogoutTimer() {
   const logoutTimer = useRef<ReturnType<typeof setTimeout>>();
 
   const logout = useCallback(() => {
+    submitter(
+      { redirectTo: location.pathname },
+      { method: "post", action: "/logout" },
+    );
     // 🐨 log the user out by submitting to /logout
     // 🐨 provide the `redirectTo` value as part of the body of
     // the request so after the user logs in again they will be
     // right back where they left off
-  }, []);
+  }, [location.pathname, submitter]);
 
   const cleanupTimers = useCallback(() => {
     clearTimeout(modalTimer.current);
